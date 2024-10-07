@@ -11,6 +11,7 @@ const ProductController = {
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <link rel="stylesheet" href="/css/styles.css">
                     <title>Dashboard</title>
                 </head>
                 <body>
@@ -26,7 +27,7 @@ const ProductController = {
                               <p>Precio: ${product.price}€</p>
                               <img src="${product.image}" alt="Imagen del producto" width="150">
                               <br>
-                              <a href="/dashboard/edit/${product._id}">Editar producto</a>
+                              <a href="/dashboard/${product._id}/edit">Editar producto</a>
                               <a href="/dashboard/delete/${product._id}">Eliminar producto</a>
                           </li>
                           <hr>`;
@@ -61,6 +62,15 @@ const ProductController = {
     },
     async showNewProduct (req, res) {
       const formHtml = `
+      <!DOCTYPE html>
+          <html lang="es">
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="/css/styles.css">
+            <title>Dashboard</title>
+          </head>
+          <body>
           <div class="add-product-form">
             <form action="/dashboard/new" method="post">
                 <label for="name">Nombre del producto:</label>
@@ -80,6 +90,8 @@ const ProductController = {
                 <button type="submit">Agregar producto</button>
             </form>
           </div>
+          </body>
+          </html>
         `;
         res.send(formHtml);
     },
@@ -99,12 +111,73 @@ const ProductController = {
             res.status(500).send('Error: product not added');
           }
     },
-    async showEditProduct (req, res) {},
-    async updateProduct (req, res) {},
+    async showEditProduct (req, res) {
+      try {
+        const product = await Product.findById(req.params.id);
+
+        if (!product) {
+            return res.status(404).send('Product not found');
+        }
+        const editform = `
+            <!DOCTYPE html>
+            <html lang="es">
+            <head>
+                <meta charset="UTF-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                <title>Editar Producto</title>
+                <link rel="stylesheet" href="/css/styles.css">
+            </head>
+            <body>
+                <h1>Editar Producto: ${product.name}</h1>
+                <form action="/dashboard/${product._id}/edit?_method=PUT" method="post">
+                    <label for="name">Nombre del producto:</label>
+                    <input type="text" id="name" name="name" value="${product.name}" required><br>
+                    <label for="description">Descripción:</label>
+                    <input type="text" id="description" name="description" value="${product.description}" required><br>
+                    <label for="image">Imagen (url):</label>
+                    <input type="url" id="image" name="image" value="${product.image}"><br>
+                    <label for="category">Categoría:</label>
+                    <select name="category">
+                        <option value="earrings" ${product.category === 'earrings' ? 'selected' : ''}>Pendientes</option>
+                        <option value="necklaces" ${product.category === 'necklaces' ? 'selected' : ''}>Collares</option>
+                        <option value="rings" ${product.category === 'rings' ? 'selected' : ''}>Anillos</option>
+                    </select><br>
+                    <label for="price">Precio:</label>
+                    <input type="number" id="price" name="price" value="${product.price}" required><br>
+                    <button type="submit">Guardar cambios</button>
+                </form>
+            </body>
+            </html>
+        `;
+
+        res.send(editform);
+    } catch (error) {
+        res.status(500).send('Error: product not found');
+    }
+  },
+    async updateProduct (req, res) {
+      try {
+        const { name, description, image, category, price } = req.body;
+
+        const updatedProduct = await Product.findByIdAndUpdate(req.params.id, {
+            name,
+            description,
+            image,
+            category,
+            price
+        }, { new: true }); 
+
+        if (!updatedProduct) {
+            return res.status(404).send('Product not found');
+        }
+
+        res.redirect('/dashboard'); 
+    } catch (error) {
+        res.status(500).send('Error: product not updated');
+    }
+    },
     async deleteProduct (req, res) {
       try {
-        console.log("Solicitud DELETE recibida");
-        console.log("ID del producto:", req.params.id);
         const product = await Product.findByIdAndDelete(req.params.id); 
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
