@@ -15,9 +15,12 @@ const ProductController = {
                     <title>Dashboard</title>
                 </head>
                 <body>
-                    <h1>Administrador</h1>
+                    <header>
+                      <h1>Panel de Administración - ResinCrafts</h1>
+                    </header>
+                    <h2>Productos en Inventario</h2>
                     <ul>`;
-
+                    if (products.length > 0) {
                     products.forEach(product => {
                       dashboard += `
                           <li>
@@ -32,8 +35,22 @@ const ProductController = {
                           </li>
                           <hr>`;
                   });
+                } else {
+                  dashboard += `<p>Ups, parece que no hay productos en el inventario...</p>`;
+                }
                   dashboard += `
                           </ul>
+                        <section id="add-product">
+                        <h2>Añadir un nuevo producto</h2>
+                        <a href="/dashboard/new" class="add-product-btn">Añadir</a>
+                        </section>
+            <footer>
+                <nav class="footer-nav">
+                    <a href="/">Inicio</a>
+                    <a href="/dashboard">Dashboard</a>
+                </nav>
+                <p>© 2024, Celia Cebaquebas</p>
+            </footer>
                       </body>
                       </html>`;
                       res.send(dashboard);
@@ -44,7 +61,66 @@ const ProductController = {
     async showProducts (req, res) {
       try {
         const products = await Product.find()
-        res.status(200).json(products)
+
+        // Filtramos por categoría si se pasa por query
+      const category = req.query.category || "all";
+      const filteredProducts = category === "all" ? products : products.filter(product => product.category === category);
+
+        //res.status(200).json(products)
+
+        let html = `
+      <!DOCTYPE html>
+      <html lang="es">
+      <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Resin Crafts ☾</title>
+          <link rel="stylesheet" href="/css/styles.css">
+      </head>
+      <body>
+          <nav>
+              <ul>
+                  <li><a href="/products?category=all">Productos</a></li>
+                  <li><a href="/products?category=earrings">Pendientes</a></li>
+                  <li><a href="/products?category=necklaces">Collares</a></li>
+                  <li><a href="/products?category=rings">Anillos</a></li>
+                  <li class="login-button"><a href="/dashboard">Admin</a></li>
+              </ul>
+          </nav>
+
+          <h1>Productos disponibles</h1>
+          <ul>`;
+
+      // Renderizamos los productos filtrados
+      if (filteredProducts.length > 0) {
+      filteredProducts.forEach(product => {
+        html += `
+          <li class="productItem">
+              <h3>${product.name}</h3>
+              <p>${product.description}</p>
+              <p>Categoría: ${product.category}</p>
+              <p>Precio: ${product.price}€</p>
+              <img src="${product.image}" alt="${product.name}" width="150">
+          </li>
+          <hr>`;
+      });
+    } else {
+      html += `<p>Ups, parece que no hay nada...</p>`;
+    }
+      html += `
+          </ul>
+          <footer>
+              <p>&copy; 2024, Celia Cebaquebas</p>
+              <div class="footer-nav">
+                  <a href="/">Volver al inicio</a>
+                  •••
+                  <a href="/dashboard">Administrador</a>
+              </div>
+          </footer>
+      </body>
+      </html>`;
+
+      res.send(html);
       } catch (err) {
         console.error("Error: products not found", err)
       }
