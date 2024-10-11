@@ -219,3 +219,51 @@ También en este repo hay un ejemplo de `views`de como acceder a la carpeta `pub
   - [Get Started with Firebase Authentication on Websites](https://firebase.google.com/docs/auth/web/start)
 
 
+Resin Dreams 🌙
+
+Bienvenido a Resin Dreams, una tienda online dedicada a la venta de joyas hechas de resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración.
+
+La estructura principal del proyecto es la siguiente:
+```
+.
+├── config
+│   ├── db.js                      # Configuración de la conexión a la base de datos MongoDB, usando Mongoose
+│   └── firebase.js (BONUS)        # Configuración de Firebase
+├── controllers
+│   ├── Product.controller.js      # Controlador que maneja la lógica de los productos. Contiene las acciones de CRUD
+    ├── Product.api.controller.js  # Controlador que maneja la lógica de la API
+│   └── authController.js (BONUS)  # Controlador de autenticación. Gestiona el registro, inicio de sesión, y autenticación de usuarios
+├── models
+│   └── Product.js                 # Esquema del modelo de producto. Define la estructura de los documentos de productos en la base de datos
+├── routes                         # Configuración de las rutas de la API y del dashboard
+│   └── productRoutes.js           # Define las rutas relacionadas con los productos y la API
+│   └── authRoutes.js (BONUS)      # Rutas relacionadas con la autenticación de usuarios
+├── middlewares (BONUS)
+│   └── authMiddleware.js          # Middleware para proteger rutas. Verifica si un usuario está autenticado antes de permitirle acceder
+└── index.js                       # Archivo principal del servidor. Configura y arranca el servidor Express, conecta con la base de datos y registra las rutas
+├── test (BONUS)
+│   └── productController.test.js  # Tests para el controlador de productos usando Jest
+├── public                         # Archivos estáticos (CSS, imágenes)
+│   ├── styles.css
+│   └── images                     # Imágenes de los productos
+├── .env                           # Variables de entorno
+└── package.json                   # Archivo de configuración del proyecto
+
+```        
+
+
+Antes de comenzar, asegúrate de tener Node.js. 
+
+Una vez clonado el repositorio, abre la terminal para instalar las dependencias (npm install). Se instalará lo siguiente:
+- Express
+- dotenv
+- method-override
+- mongodb y mongoose
+
+Configuración de variables de entorno: Crea un archivo .env en la raíz del proyecto y asegúrate de cambiar la MONGO_URI por tu cadena de conexión a MongoDB. Para ello, antes tendrás que crear una nueva base de datos en MongoDB Atlas y asegurarte de que sea accesible.
+
+Inicia el servidor utilizando el siguiente comando: npm start
+
+Para acceder a la aplicación, abre tu navegador y visita http://localhost:3003
+
+El proyecto incluye varias rutas para la visualización y gestión de productos:

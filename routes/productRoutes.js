@@ -2,7 +2,9 @@ const express = require("express")
 const router = express.Router()
 const Product = require("../models/Product")
 const ProductController = require("../controllers/Product.controller")
+const productApiController = require('../controllers/Product.api.controller');
 
+// Rutas Front
 router.get("/", ProductController.showProducts)
 router.get("/products", ProductController.showProducts);
 router.get("/products/:_id", ProductController.showProductById);
@@ -13,5 +15,12 @@ router.get("/dashboard/:_id", ProductController.showProductById);
 router.get("/dashboard/:id/edit", ProductController.showEditProduct);
 router.put("/dashboard/:id/edit", ProductController.updateProduct);
 router.get("/dashboard/delete/:id", ProductController.deleteProduct);
+
+// Rutas API
+router.get('/api/products', productApiController.getAllProducts);
+router.get('/api/products/:id', productApiController.getProductById);
+router.post('/api/products/new', productApiController.createProduct);
+router.put('/api/products/:id', productApiController.updateProduct);
+router.delete('/api/products/:id', productApiController.deleteProduct);
 
 module.exports = router

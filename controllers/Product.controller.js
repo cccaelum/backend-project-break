@@ -7,18 +7,18 @@ const ProductController = {
       
         let dashboard = `
                 <!DOCTYPE html>
-                <html lang="es">
+                <html lang="en">
                 <head>
                     <meta charset="UTF-8">
                     <meta name="viewport" content="width=device-width, initial-scale=1.0">
                     <link rel="stylesheet" href="/css/styles.css">
-                    <title>Dashboard</title>
+                    <title>ResinDreams - Dashboard</title>
                 </head>
                 <body>
                     <header>
-                      <h1>Panel de Administración - ResinCrafts</h1>
+                      <h1>Administration - ResinDreams</h1>
                     </header>
-                    <h2>Productos en Inventario</h2>
+                    <h2>Product Inventory</h2>
                     <ul>`;
                     if (products.length > 0) {
                     products.forEach(product => {
@@ -26,27 +26,28 @@ const ProductController = {
                           <li>
                               <h3>${product.name}</h3>
                               <p>${product.description}</p>
-                              <p>Categoría: ${product.category}</p>
-                              <p>Precio: ${product.price}€</p>
-                              <img src="${product.image}" alt="Imagen del producto" width="150">
+                              <p>Category: ${product.category}</p>
+                              <p>Price: ${product.price}€</p>
+                              <img src="${product.image}" alt="Product image" width="150">
                               <br>
-                              <a href="/dashboard/${product._id}/edit">Editar producto</a>
-                              <a href="/dashboard/delete/${product._id}">Eliminar producto</a>
+                              <a href="/dashboard/${product._id}/edit">Edit product</a>
+                              <a href="/dashboard/delete/${product._id}">Delete product</a>
                           </li>
                           <hr>`;
                   });
                 } else {
-                  dashboard += `<p>Ups, parece que no hay productos en el inventario...</p>`;
+                  dashboard += `<p>Oops, it seems there are no products in inventory...</p>`;
                 }
                   dashboard += `
                           </ul>
                         <section id="add-product">
-                        <h2>Añadir un nuevo producto</h2>
-                        <a href="/dashboard/new" class="add-product-btn">Añadir</a>
+                        <h2>Add a new product</h2>
+                        <a href="/dashboard/new" class="add-product-btn">Add</a>
                         </section>
             <footer>
                 <nav class="footer-nav">
-                    <a href="/">Inicio</a>
+                    <a href="/">Home</a>
+                    •••
                     <a href="/dashboard">Dashboard</a>
                 </nav>
                 <p>© 2024, Celia Cebaquebas</p>
@@ -70,25 +71,25 @@ const ProductController = {
 
         let html = `
       <!DOCTYPE html>
-      <html lang="es">
+      <html lang="en">
       <head>
           <meta charset="UTF-8">
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Resin Crafts ☾</title>
+          <title>Resin Dreams ☾</title>
           <link rel="stylesheet" href="/css/styles.css">
       </head>
       <body>
           <nav>
               <ul>
-                  <li><a href="/products?category=all">Productos</a></li>
-                  <li><a href="/products?category=earrings">Pendientes</a></li>
-                  <li><a href="/products?category=necklaces">Collares</a></li>
-                  <li><a href="/products?category=rings">Anillos</a></li>
+                  <li><a href="/products?category=all">Products</a></li>
+                  <li><a href="/products?category=earrings">Earrings</a></li>
+                  <li><a href="/products?category=necklaces">Necklaces</a></li>
+                  <li><a href="/products?category=rings">Rings</a></li>
                   <li class="login-button"><a href="/dashboard">Admin</a></li>
               </ul>
           </nav>
 
-          <h1>Productos disponibles</h1>
+          <h1>Available products</h1>
           <ul>`;
 
       // Renderizamos los productos filtrados
@@ -98,23 +99,24 @@ const ProductController = {
           <li class="productItem">
               <h3>${product.name}</h3>
               <p>${product.description}</p>
-              <p>Categoría: ${product.category}</p>
-              <p>Precio: ${product.price}€</p>
+              <p>Price: ${product.price}€</p>
               <img src="${product.image}" alt="${product.name}" width="150">
+              <br>
+              <a href="/products/${product.id}">Show details</a>
           </li>
           <hr>`;
       });
     } else {
-      html += `<p>Ups, parece que no hay nada...</p>`;
+      html += `<p>Oops, it seems there is nothing...</p>`;
     }
       html += `
           </ul>
           <footer>
               <p>&copy; 2024, Celia Cebaquebas</p>
               <div class="footer-nav">
-                  <a href="/">Volver al inicio</a>
+                  <a href="/">Home</a>
                   •••
-                  <a href="/dashboard">Administrador</a>
+                  <a href="/dashboard">Dashboard</a>
               </div>
           </footer>
       </body>
@@ -131,7 +133,38 @@ const ProductController = {
         if (!product) {
           return res.status(404).json({message: 'Product not found'});
         }
-        res.status(200).json(product);
+
+        const html = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>${product.name}</title>
+            <link rel="stylesheet" href="/css/styles.css">  
+        </head>
+        <body>
+            <h1>${product.name}</h1>
+            <img src="${product.image}" alt="${product.name}" width="300">
+            <p><strong>Description:</strong> ${product.description}</p>
+            <p><strong>Category:</strong> ${product.category}</p>
+            <p><strong>Price:</strong> ${product.price}€</p>
+
+            <footer>
+                <p>&copy; 2024, Celia Cebaquebas</p>
+                <div class="footer-nav">
+                  <a href="/">Home</a>
+                  •••
+                  <a href="/dashboard">Dashboard</a>
+                </div>
+            </footer>
+        </body>
+        </html>
+        `;
+
+        res.status(200).send(html);
+
+        //res.status(200).json(product);
       } catch (err) {
         console.error("Error: product not found", err)
       }
@@ -139,31 +172,31 @@ const ProductController = {
     async showNewProduct (req, res) {
       const formHtml = `
       <!DOCTYPE html>
-          <html lang="es">
+          <html lang="en">
           <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
             <link rel="stylesheet" href="/css/styles.css">
-            <title>Dashboard</title>
+            <title>ResinDreams - Add Product</title>
           </head>
           <body>
           <div class="add-product-form">
             <form action="/dashboard/new" method="post">
-                <label for="name">Nombre del producto:</label>
+                <label for="name">Product name:</label>
                 <input type="text" id="name" name="name" required><br>
-                <label for="description">Descripción:</label>
+                <label for="description">Description:</label>
                 <input type="text" id="description" name="description" required><br>
-                <label for="image">Imagen (url):</label>
+                <label for="image">Image (url):</label>
                 <input type="url" id="image" name="image"><br>
-                <label for="category">Categoría:</label>
+                <label for="category">Category:</label> 
                 <select name="category">
-                    <option value="earrings" selected>Pendientes</option>
-                    <option value="necklaces">Collares</option>
-                    <option value="rings">Anillos</option>
+                    <option value="earrings" selected>Earrings</option>
+                    <option value="necklaces">Necklaces</option>
+                    <option value="rings">Rings</option>
                 </select><br>
-                <label for="price">Precio:</label>
+                <label for="price">Price:</label>
                 <input type="number" id="price" name="price" required><br>
-                <button type="submit">Agregar producto</button>
+                <button type="submit">Add product</button>
             </form>
           </div>
           </body>
@@ -182,7 +215,8 @@ const ProductController = {
               price
             });
             await newProduct.save();
-            res.status(201).json(newProduct)
+            //res.status(201).json(newProduct)
+            res.redirect('/dashboard');
           } catch (error) {
             res.status(500).send('Error: product not added');
           }
@@ -196,31 +230,31 @@ const ProductController = {
         }
         const editform = `
             <!DOCTYPE html>
-            <html lang="es">
+            <html lang="en">
             <head>
                 <meta charset="UTF-8">
                 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                <title>Editar Producto</title>
+                <title>ResinDreams - Edit Product</title>
                 <link rel="stylesheet" href="/css/styles.css">
             </head>
             <body>
-                <h1>Editar Producto: ${product.name}</h1>
+                <h1>Edit Product: ${product.name}</h1>
                 <form action="/dashboard/${product._id}/edit?_method=PUT" method="post">
-                    <label for="name">Nombre del producto:</label>
+                    <label for="name">Product name:</label>
                     <input type="text" id="name" name="name" value="${product.name}" required><br>
-                    <label for="description">Descripción:</label>
+                    <label for="description">Description:</label>
                     <input type="text" id="description" name="description" value="${product.description}" required><br>
-                    <label for="image">Imagen (url):</label>
+                    <label for="image">Image (url):</label>
                     <input type="url" id="image" name="image" value="${product.image}"><br>
-                    <label for="category">Categoría:</label>
+                    <label for="category">Category:</label>
                     <select name="category">
-                        <option value="earrings" ${product.category === 'earrings' ? 'selected' : ''}>Pendientes</option>
-                        <option value="necklaces" ${product.category === 'necklaces' ? 'selected' : ''}>Collares</option>
-                        <option value="rings" ${product.category === 'rings' ? 'selected' : ''}>Anillos</option>
+                        <option value="earrings" ${product.category === 'earrings' ? 'selected' : ''}>Earrings</option>
+                        <option value="necklaces" ${product.category === 'necklaces' ? 'selected' : ''}>Necklaces</option>
+                        <option value="rings" ${product.category === 'rings' ? 'selected' : ''}>Rings</option>
                     </select><br>
-                    <label for="price">Precio:</label>
+                    <label for="price">Price:</label>
                     <input type="number" id="price" name="price" value="${product.price}" required><br>
-                    <button type="submit">Guardar cambios</button>
+                    <button type="submit">Save changes</button>
                 </form>
             </body>
             </html>
@@ -258,7 +292,7 @@ const ProductController = {
         if (!product) {
             return res.status(404).json({ message: 'Product not found' });
         }
-        res.status(200).json({ message: 'Product deleted successfully' });  
+        res.redirect('/dashboard');  
     } catch (error) {
         res.status(500).json({ message: 'Error: product not deleted', error });
     }
