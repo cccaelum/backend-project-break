@@ -2,19 +2,23 @@
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.1.0/firebase-app.js';
 import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/9.1.0/firebase-auth.js';
 
-// Your web app's Firebase configuration
-const firebaseConfig = {
-  apiKey: "AIzaSyCHM6QNYJFhhgK3g-kDTf4gnI2PGpDxKXI",
-  authDomain: "backend-project-6c315.firebaseapp.com",
-  projectId: "backend-project-6c315",
-  storageBucket: "backend-project-6c315.appspot.com",
-  messagingSenderId: "570228057536",
-  appId: "1:570228057536:web:0756c5568caa13b4441425"
+// Función para obtener la configuración de Firebase desde el servidor
+const fetchFirebaseConfig = async () => {
+    const response = await fetch('/firebase-config'); // Llama a tu API para obtener la configuración
+    if (!response.ok) {
+        throw new Error('Failed to fetch Firebase config');
+    }
+    return await response.json(); // Devuelve la configuración como un objeto
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+let auth; // Declara auth aquí para que esté disponible en el ámbito global de este módulo
+
+// Inicializa Firebase
+const initializeFirebase = async () => {
+        const firebaseConfig = await fetchFirebaseConfig(); // Espera a obtener la configuración
+        const app = initializeApp(firebaseConfig); // Inicializa Firebase
+        auth = getAuth(app); // Obtiene la autenticación de Firebase
+    };
 
 // Define la función login como una arrow function
 const login = async () => {
@@ -56,7 +60,6 @@ const login = async () => {
 
       console.log('Response data:', data);
   
-      // Redirige al dashboard si el login es exitoso
       if (data.success) {
         window.location.href = '/dashboard';
       } else {
@@ -67,8 +70,11 @@ const login = async () => {
     }
   };
   
-// Event listener para el botón de inicio de sesión
+
 document.getElementById('loginForm').addEventListener('submit', (event) => {
     event.preventDefault(); // Evita que el formulario se envíe de forma tradicional
-    login(); // Llama a la función login
+    login(); 
 });
+
+// Inicializa Firebase al cargar el script
+initializeFirebase();
