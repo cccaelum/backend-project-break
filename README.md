@@ -221,7 +221,7 @@ También en este repo hay un ejemplo de `views`de como acceder a la carpeta `pub
 
 Resin Dreams 🌙
 
-Bienvenido a Resin Dreams, una tienda online dedicada a la venta de joyas hechas de resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración.
+Bienvenido a Resin Dreams, una tienda online dedicada a la venta de cositas hechas con resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración.
 
 La estructura principal del proyecto es la siguiente:
 ```
@@ -264,6 +264,6 @@ Configuración de variables de entorno: Crea un archivo .env en la raíz del pro
 
 Inicia el servidor utilizando el siguiente comando: npm start
 
-Para acceder a la aplicación, abre tu navegador y visita http://localhost:3003
+Para acceder a la aplicación desde tu PC, abre el navegador y visita http://localhost:3003
 
 El proyecto incluye varias rutas para la visualización y gestión de productos:

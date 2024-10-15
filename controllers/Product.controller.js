@@ -30,8 +30,7 @@ const ProductController = {
                               <p>Price: ${product.price}€</p>
                               <img src="${product.image}" alt="Product image" width="150">
                               <br>
-                              <a href="/dashboard/${product._id}/edit">Edit product</a>
-                              <a href="/dashboard/delete/${product._id}">Delete product</a>
+                              <a href="/products/${product._id}?dashboard=true">View product</a>
                           </li>
                           <hr>`;
                   });
@@ -44,6 +43,9 @@ const ProductController = {
                         <h2>Add a new product</h2>
                         <a href="/dashboard/new" class="add-product-btn">Add</a>
                         </section>
+                        <form action="/logout" method="post">
+                          <button type="submit">Logout</button>
+                        </form>
             <footer>
                 <nav class="footer-nav">
                     <a href="/">Home</a>
@@ -134,7 +136,9 @@ const ProductController = {
           return res.status(404).json({message: 'Product not found'});
         }
 
-        const html = `
+        const isDashboard = req.query.dashboard === 'true'; // Verifica si el acceso es desde el dashboard
+
+        let html = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
@@ -149,7 +153,18 @@ const ProductController = {
             <p><strong>Description:</strong> ${product.description}</p>
             <p><strong>Category:</strong> ${product.category}</p>
             <p><strong>Price:</strong> ${product.price}€</p>
+            `;
 
+            // Si accedemos desde el dashboard, añadimos botones de editar y eliminar
+        if (isDashboard) {
+          html += `
+          <div class="dashboard-actions">
+              <a href="/dashboard/${product._id}/edit" class="edit-button">Edit</a>
+              <a href="/dashboard/delete/${product._id}" class="delete-button">Delete</a>
+          </div>`;
+      }
+
+       html += `
             <footer>
                 <p>&copy; 2024, Celia Cebaquebas</p>
                 <div class="footer-nav">

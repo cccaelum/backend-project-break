@@ -1,12 +1,22 @@
 const express = require('express');
-const app = express();
-const PORT = 3003;
 const dbConnection = require("./config/db")
-const router = require('./routes/productRoutes')
 const path = require('path');
+const cookieParser = require('cookie-parser');
+const admin = require('firebase-admin');
+const serviceAccount = require('./config/serviceAccount')
+require('dotenv').config();
 
-app.use(express.urlencoded({ extended: true }));
+//inicializamos admin (Cuidado con la posición se tiene que inicializar antes de importar y ejecutar el middleware)
+admin.initializeApp({
+    credential: admin.credential.cert(serviceAccount),
+  });
+
+const router = require('./routes/productRoutes');
+const app = express();
+
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -17,4 +27,5 @@ app.use('/', router)
 
 dbConnection()
 
+const PORT = 3003;
 app.listen(PORT, () => console.log(`Server listening in http://localhost:${PORT}`));
