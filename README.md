@@ -1,6 +1,6 @@
-# Tienda de ropa
+# Resin Dreams 🌙
 
-Vamos a montar una tienda de ropa con un catálogo de productos y un dashboard para el administrador. Los productos se guardarán en una base de datos de mongo en Atlas. Podemos usar como referencia el pdf [web_ejemplo.pdf](web_ejemplo.pdf) que contiene un ejemplo de cómo podría ser la interfaz de la tienda y el dashboard.
+Bienvenid@ a Resin Dreams, una tienda online dedicada a la venta de cositas hechas con resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración.
 
 ## Índice
 
@@ -19,33 +19,6 @@ Vamos a montar una tienda de ropa con un catálogo de productos y un dashboard p
 
 ## Estructura de archivos
 
-Vamos a crear la estructura de archivos que vamos a necesitar para el proyecto. 
-
-```
-.
-├── config
-│   ├── db.js
-│   └── firebase.js (BONUS)
-├── controllers
-│   ├── productController.js
-│   └── authController.js (BONUS)
-├── models
-│   └── Product.js
-├── routes
-│   └── productRoutes.js
-│   └── authRoutes.js (BONUS)
-├── middlewares (BONUS)
-│   └── authMiddleware.js
-└── index.js
-├── test (BONUS)
-│   └── productController.test.js
-├── public
-│   ├── styles.css
-│   └── images (OPCIONAL)
-├── .env
-└── package.json
-
-```
 
 ### Características de los archivos
 
@@ -142,40 +115,6 @@ Por ejemplo:
 - getProductCards: Genera el html de los productos. Recibe un array de productos y devuelve el html de las tarjetas de los productos.
 - ...
 
-Un ejemplo de una función para generar el html de los productos podría ser:
-
-```javascript
-function getProductCards(products) {
-  let html = '';
-  for (let product of products) {
-    html += `
-      <div class="product-card">
-        <img src="${product.image}" alt="${product.name}">
-        <h2>${product.name}</h2>
-        <p>${product.description}</p>
-        <p>${product.price}€</p>
-        <a href="/products/${product._id}">Ver detalle</a>
-      </div>
-    `;
-  }
-  return html;
-}
-```
-
-Con estas funciones auxiliares, el controlador será más limpio y fácil de entender.
-Ejemplo:
-
-```javascript
-
-const showProducts = async (req, res) => {
-  const products = await Product.find();
-  const productCards = getProductCards(products);
-  const html = baseHtml + getNavBar() + productCards;
-  res.send(html);
-};
-    
-```
-
 ## Despliegue
 
 Creamos un nuevo proyecto en render y desplegamos el proyecto desde github. Recordad añadir las variables de entorno en render. Si no aparece el repositorio en render, tendremos que modificar los permisos de render para que pueda acceder al repositorio.
@@ -219,34 +158,32 @@ También en este repo hay un ejemplo de `views`de como acceder a la carpeta `pub
   - [Get Started with Firebase Authentication on Websites](https://firebase.google.com/docs/auth/web/start)
 
 
-Resin Dreams 🌙
 
-Bienvenido a Resin Dreams, una tienda online dedicada a la venta de cositas hechas con resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración.
+
+
 
 La estructura principal del proyecto es la siguiente:
 ```
 .
 ├── config
 │   ├── db.js                      # Configuración de la conexión a la base de datos MongoDB, usando Mongoose
-│   └── firebase.js (BONUS)        # Configuración de Firebase
+│   └── serviceAccount.js          # Configuración de Firebase
 ├── controllers
-│   ├── Product.controller.js      # Controlador que maneja la lógica de los productos. Contiene las acciones de CRUD
-    ├── Product.api.controller.js  # Controlador que maneja la lógica de la API
-│   └── authController.js (BONUS)  # Controlador de autenticación. Gestiona el registro, inicio de sesión, y autenticación de usuarios
+│   ├── Product.controller.js      # Controlador que maneja la lógica de los productos
+│   └── Product.api.controller.js  # Controlador que maneja la lógica de la API
+├── middlewares
+│   └── authMiddleware.js          # Middleware para proteger rutas. Verifica si un usuario está autenticado antes de permitirle acceder
 ├── models
 │   └── Product.js                 # Esquema del modelo de producto. Define la estructura de los documentos de productos en la base de datos
+├── public                         
+│   ├── css                        # Estilos CSS
+│   ├── images                     # Imágenes de los productos
+│   ├── utils                      # Archivo configLogin.js para inicializar Firebase y la función de login
+│   └── views                      # Archivos HTML de la página de login y register 
 ├── routes                         # Configuración de las rutas de la API y del dashboard
-│   └── productRoutes.js           # Define las rutas relacionadas con los productos y la API
-│   └── authRoutes.js (BONUS)      # Rutas relacionadas con la autenticación de usuarios
-├── middlewares (BONUS)
-│   └── authMiddleware.js          # Middleware para proteger rutas. Verifica si un usuario está autenticado antes de permitirle acceder
-└── index.js                       # Archivo principal del servidor. Configura y arranca el servidor Express, conecta con la base de datos y registra las rutas
-├── test (BONUS)
-│   └── productController.test.js  # Tests para el controlador de productos usando Jest
-├── public                         # Archivos estáticos (CSS, imágenes)
-│   ├── styles.css
-│   └── images                     # Imágenes de los productos
+│   └── productRoutes.js           # Define las rutas relacionadas con los productos, el registro y login del admin y la API
 ├── .env                           # Variables de entorno
+├── index.js                       # Archivo principal del servidor. Configura y arranca el servidor Express, conecta con la base de datos y registra las rutas
 └── package.json                   # Archivo de configuración del proyecto
 
 ```        
@@ -259,8 +196,10 @@ Una vez clonado el repositorio, abre la terminal para instalar las dependencias 
 - dotenv
 - method-override
 - mongodb y mongoose
+- cookie-parser
+- firebase y firebase-admin
 
-Configuración de variables de entorno: Crea un archivo .env en la raíz del proyecto y asegúrate de cambiar la MONGO_URI por tu cadena de conexión a MongoDB. Para ello, antes tendrás que crear una nueva base de datos en MongoDB Atlas y asegurarte de que sea accesible.
+Configuración de variables de entorno: Crea un archivo .env en la raíz del proyecto y asegúrate de cambiar la MONGO_URI por tu cadena de conexión a MongoDB. Para ello, antes tendrás que crear una nueva base de datos en MongoDB Atlas y asegurarte de que sea accesible. También deberás cambiar las variables de entorno relacionadas con Firebase. 
 
 Inicia el servidor utilizando el siguiente comando: npm start
 

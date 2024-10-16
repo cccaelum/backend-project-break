@@ -8,7 +8,7 @@ const admin = require('firebase-admin');
 const auth = admin.auth();
 const checkAuth = require('../middlewares/authMiddleware')
 
-// Rutas Front
+// Rutas tienda
 router.get("/", ProductController.showProducts)
 router.get("/products", ProductController.showProducts);
 router.get("/products/:_id", ProductController.showProductById);

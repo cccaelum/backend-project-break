@@ -87,7 +87,7 @@ const ProductController = {
                   <li><a href="/products?category=earrings">Earrings</a></li>
                   <li><a href="/products?category=necklaces">Necklaces</a></li>
                   <li><a href="/products?category=rings">Rings</a></li>
-                  <li class="login-button"><a href="/dashboard">Admin</a></li>
+                  <li class="login-button"><a href="/dashboard">Log in</a></li>
               </ul>
           </nav>
 
@@ -178,8 +178,6 @@ const ProductController = {
         `;
 
         res.status(200).send(html);
-
-        //res.status(200).json(product);
       } catch (err) {
         console.error("Error: product not found", err)
       }
@@ -195,6 +193,7 @@ const ProductController = {
             <title>ResinDreams - Add Product</title>
           </head>
           <body>
+          <h1>Resin Dreams 🌙</h1>
           <div class="add-product-form">
             <form action="/dashboard/new" method="post">
                 <label for="name">Product name:</label>
@@ -230,7 +229,6 @@ const ProductController = {
               price
             });
             await newProduct.save();
-            //res.status(201).json(newProduct)
             res.redirect('/dashboard');
           } catch (error) {
             res.status(500).send('Error: product not added');
