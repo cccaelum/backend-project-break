@@ -17,22 +17,22 @@ const ProductController = {
                 <body>
                     <header>
                       <h1>Administration - ResinDreams</h1>
+                      <form action="/logout" method="post" class="logout">
+                          <button type="submit" class="logout-btn">Log out</button>
+                      </form>
                     </header>
                     <h2>Product Inventory</h2>
-                    <ul>`;
+                    <ul class="product-list">`;
                     if (products.length > 0) {
                     products.forEach(product => {
                       dashboard += `
-                          <li>
-                              <h3>${product.name}</h3>
-                              <p>${product.description}</p>
-                              <p>Category: ${product.category}</p>
+                          <li class="productItem">
+                              <h3>
+                                <a href="/products/${product.id}?dashboard=true">${product.name}</a>
+                              </h3>
                               <p>Price: ${product.price}€</p>
                               <img src="${product.image}" alt="Product image" width="150">
-                              <br>
-                              <a href="/products/${product._id}?dashboard=true">View product</a>
-                          </li>
-                          <hr>`;
+                          </li>`;
                   });
                 } else {
                   dashboard += `<p>Oops, it seems there are no products in inventory...</p>`;
@@ -40,17 +40,14 @@ const ProductController = {
                   dashboard += `
                           </ul>
                         <section id="add-product">
-                        <h2>Add a new product</h2>
-                        <a href="/dashboard/new" class="add-product-btn">Add</a>
+                            <h2>
+                              <a href="/dashboard/new" class="add-product-link">Add a new product +</a>
+                            </h2>
                         </section>
-                        <form action="/logout" method="post">
-                          <button type="submit">Logout</button>
-                        </form>
+                        
             <footer>
                 <nav class="footer-nav">
                     <a href="/">Home</a>
-                    •••
-                    <a href="/dashboard">Dashboard</a>
                 </nav>
                 <p>© 2024, Celia Cebaquebas</p>
             </footer>
@@ -68,8 +65,6 @@ const ProductController = {
         // Filtramos por categoría si se pasa por query
       const category = req.query.category || "all";
       const filteredProducts = category === "all" ? products : products.filter(product => product.category === category);
-
-        //res.status(200).json(products)
 
         let html = `
       <!DOCTYPE html>
@@ -92,21 +87,20 @@ const ProductController = {
           </nav>
 
           <h1>Available products</h1>
-          <ul>`;
+          <ul class="product-list">`;
 
       // Renderizamos los productos filtrados
       if (filteredProducts.length > 0) {
       filteredProducts.forEach(product => {
         html += `
           <li class="productItem">
-              <h3>${product.name}</h3>
-              <p>${product.description}</p>
-              <p>Price: ${product.price}€</p>
+              <h3>
+                <a href="/products/${product.id}">${product.name}</a>
+              </h3>
               <img src="${product.image}" alt="${product.name}" width="150">
+              <p>${product.price}€</p>
               <br>
-              <a href="/products/${product.id}">Show details</a>
-          </li>
-          <hr>`;
+          </li>`;
       });
     } else {
       html += `<p>Oops, it seems there is nothing...</p>`;
@@ -118,7 +112,7 @@ const ProductController = {
               <div class="footer-nav">
                   <a href="/">Home</a>
                   •••
-                  <a href="/dashboard">Dashboard</a>
+                  <a href="/register">Register</a>
               </div>
           </footer>
       </body>
@@ -144,15 +138,17 @@ const ProductController = {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>${product.name}</title>
+            <title>Product details</title>
             <link rel="stylesheet" href="/css/styles.css">  
         </head>
         <body>
+            <div class="product-container">
             <h1>${product.name}</h1>
             <img src="${product.image}" alt="${product.name}" width="300">
             <p><strong>Description:</strong> ${product.description}</p>
             <p><strong>Category:</strong> ${product.category}</p>
             <p><strong>Price:</strong> ${product.price}€</p>
+            </div>
             `;
 
             // Si accedemos desde el dashboard, añadimos botones de editar y eliminar
@@ -193,7 +189,7 @@ const ProductController = {
             <title>ResinDreams - Add Product</title>
           </head>
           <body>
-          <h1>Resin Dreams 🌙</h1>
+          <h1>Add product</h1>
           <div class="add-product-form">
             <form action="/dashboard/new" method="post">
                 <label for="name">Product name:</label>

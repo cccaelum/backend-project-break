@@ -6,12 +6,14 @@ const admin = require('firebase-admin');
 const serviceAccount = require('./config/serviceAccount')
 require('dotenv').config();
 
-//inicializamos admin (Cuidado con la posición se tiene que inicializar antes de importar y ejecutar el middleware)
+//inicializamos admin
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount),
   });
 
 const router = require('./routes/productRoutes');
+const apiRoutes = require('./routes/apiRoutes');
+const authRoutes = require('./routes/authRoutes');
 const app = express();
 
 app.use(express.json());
@@ -23,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 const methodOverride = require('method-override');
 app.use(methodOverride('_method')); // https://alejandrojs.wordpress.com/2017/06/30/usando-method-override-para-hacer-requests-put-en-express/
 
-app.use('/', router)
+app.use('/', router, apiRoutes, authRoutes)
 
 dbConnection()
 
