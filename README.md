@@ -1,6 +1,6 @@
-# Resin Dreams 🌙
+# Resin Dreams 
 
-Bienvenid@ a Resin Dreams, una tienda online dedicada a la venta de cositas hechas con resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración. Para acceder a este panel de administración, se ha implementado autenticación de usuarios con Firebase.
+Bienvenid@ a [Resin Dreams](https://backend-project-break-hof7.onrender.com/), una tienda online dedicada a la venta de cositas hechas con resina. Este proyecto está construido con Node.js, Express y MongoDB, y te permite gestionar un inventario de productos, ver diferentes categorías y gestionar productos desde un panel de administración. Para acceder a este panel de administración, se ha implementado autenticación de usuarios con Firebase.
 
 ## Índice
 
@@ -125,7 +125,7 @@ Además, también tenemos la función `showDashboard`, que devuelve la vista del
 
 ## Despliegue
 
-He usado Render para el despliegue del proyecto desde Github. Como he mencionado anteriormente, es importante añadir las variables de entorno necesarias (Mongo URI y las relacionadas con Firebase) en la configuración de Render antes del despliegue.
+He usado Render para el despliegue del proyecto desde Github. Como he mencionado anteriormente, es importante añadir las variables de entorno necesarias (Mongo URI y las relacionadas con Firebase) en la configuración de Render antes del despliegue. 
 
 ## API y documentación con Postman
 
