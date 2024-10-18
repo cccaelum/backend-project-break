@@ -7,7 +7,6 @@ Bienvenid@ a Resin Dreams, una tienda online dedicada a la venta de cositas hech
   - [Estructura de archivos](#estructura-de-archivos)
   - [Base de datos](#base-de-datos)
   - [Servidor](#servidor)
-  - [Modelo](#modelo)
   - [Rutas](#rutas)
   - [Controladores](#controladores)
   - [Despliegue](#despliegue)
@@ -35,7 +34,7 @@ La estructura principal del proyecto es la siguiente:
 │   ├── images                     # Imágenes de los productos
 │   ├── utils                      # Archivo configLogin.js para inicializar Firebase y la función de login
 │   └── views                      # Archivos HTML de la página de login y register 
-├── routes                         # Configuración de las rutas de la API y del dashboard
+├── routes                         
 │   ├── apiRoutes.js               # Define las rutas relacionadas con la API
 │   ├── authRoutes.js              # Define las rutas que requieren autenticación
 │   └── productRoutes.js           # Define las rutas relacionadas con los productos
@@ -60,21 +59,9 @@ Una vez configuradas las variables de entorno, inicia el servidor utilizando el 
 
 Para acceder a la aplicación desde tu PC, abre el navegador y visita http://localhost:3003
 
-El proyecto incluye varias rutas para la visualización y gestión de productos:
-
 ## Base de datos
 
-Para crear la base de datos, utiliza MongoDB Atlas. Crea un nuevo proyecto, despliega una nueva base de datos y copia la URI de conexión en tu archivo .env
-
-## Servidor
-
-El servidor está construido con Express. Utiliza middleware como express.urlencoded para procesar los cuerpos de las solicitudes POST y express.static para servir archivos estáticos desde la carpeta public.
-
-El archivo index.js es el punto de entrada de la aplicación, donde se configura el servidor y se registran las rutas.
-
-## Modelo
-
-l modelo de producto consta de los siguientes campos:
+El modelo de producto para la base de datos consta de los siguientes campos:
 
 Nombre: Nombre del producto.
 Descripción: Descripción detallada del producto.
@@ -82,58 +69,71 @@ Imagen: URL o ruta de la imagen del producto.
 Categoría: Categoría a la que pertenece el producto.
 Precio: Precio del producto.
 
+## Servidor
+
+El archivo index.js es el punto de entrada de la aplicación, donde se configura el servidor y se registran las rutas. El servidor utiliza middleware como express.urlencoded para procesar los cuerpos de las solicitudes y express.static para servir archivos estáticos desde la carpeta public.
+
 ## Rutas
 
-Vamos a crear las rutas CRUD para los productos. 
+Las rutas están divididas en 3 archivos: apiRoutes, authRoutes y productRoutes.
 
-- GET /products: Devuelve todos los productos. Cada producto tendrá un enlace a su página de detalle.
-- GET /products/:productId: Devuelve el detalle de un producto.
-- GET /dashboard: Devuelve el dashboard del administrador. En el dashboard aparecerán todos los artículos que se hayan subido. Si clickamos en uno de ellos nos llevará a su página para poder actualizarlo o eliminarlo.
-- GET /dashboard/new: Devuelve el formulario para subir un artículo nuevo.
-- POST /dashboard: Crea un nuevo producto.
-- GET /dashboard/:productId: Devuelve el detalle de un producto en el dashboard.
-- GET /dashboard/:productId/edit: Devuelve el formulario para editar un producto.
-- PUT /dashboard/:productId: Actualiza un producto.
-- DELETE /dashboard/:productId/delete: Elimina un producto.
+En apiRoutes encontramos las rutas de la API:
+- GET /api/products: devuelve todos los productos.
+- GET /api/products/:id: devuelve el detalle de un producto.
+- POST /api/products/new: crea un nuevo producto.
+- PUT /api/products/:id: actualiza un producto por su ID.
+- DELETE /api/products/:id: borra un producto por su ID.
+
+En authRoutes tenemos las rutas que requieren autenticación con Firebase:
+- GET /register: devuelve el formulario de registro.
+- POST /register: crea un nuevo usuario con el email y contraseña recogidos en el formulario.
+- GET /login: devuelve el formulario para iniciar sesión en nuestra web.
+- POST /login: crea y verifica el token para iniciar sesión.
+- POST /logout: elimina el token de sesión y redirige al inicio.
+
+Por último, el archivo productRoutes.js incluye las rutas para la visualización y gestión de productos:
+
+- GET /products: devuelve todos los productos. Cada producto tiene un enlace a su página de detalle.
+- GET /products/:_id: devuelve el detalle de un producto.
+- GET /dashboard: devuelve el dashboard del administrador. Aparecen todos los artículos que se hayan subido. Si clickamos en uno de ellos nos llevará a su página para poder actualizarlo o eliminarlo.
+- GET /dashboard/new: devuelve el formulario para subir un artículo nuevo.
+- POST /dashboard/new: crea un nuevo producto.
+- GET /dashboard/:id?dashboard=true: devuelve el detalle de un producto desde el dashboard.
+- GET /dashboard/:_id/edit: devuelve el formulario para editar un producto.
+- PUT /dashboard/:_id/edit: actualiza un producto.
+- DELETE /dashboard/delete/:id: elimina un producto.
 
 ## Controladores
 
-A continuación crearemos el controlador de productos. Este controlador se dedicará a manejar las solicitudes CRUD de los productos. Devolverá las respuestas en formato HTML.
-Para ello, crearemos algunas funciones auxiliares que nos ayudarán a devolver las vistas con SSR.
+En la carpeta de controladores encontrados dos archivos, uno con los controladores de la API y otro con los controladores de nuestra web. 
 
-Las funciones principales del controlador serán:
+El ProductApiController maneja solicitudes CRUD y devuelve las respuestas en formato JSON. Por otro lado, el Productcontroller también maneja solicitudes CRUD, pero las respuestas son en formato HTML (vistas con SSR).
+
+Las funciones principales del controlador son:
 
 - showProducts: Devuelve la vista con todos los productos.
 - showProductById: Devuelve la vista con el detalle de un producto.
 - showNewProduct: Devuelve la vista con el formulario para subir un artículo nuevo.
-- createProduct: Crea un nuevo producto. Una vez creado, redirige a la vista de detalle del producto o a la vista de todos los productos del dashboard.
+- createProduct: Crea un nuevo producto. 
 - showEditProduct: Devuelve la vista con el formulario para editar un producto.
-- updateProduct: Actualiza un producto. Una vez actualizado, redirige a la vista de detalle del producto o a la vista de todos los productos del dashboard.
-- deleteProduct: Elimina un producto. Una vez eliminado, redirige a la vista de todos los productos del dashboard.
+- updateProduct: Actualiza un producto. 
+- deleteProduct: Elimina un producto. 
 
-Las funciones showProducts y showProductById pueden devolver respuestas ligeramente distintas si se llega desde el dashboard o desde la vista principal. Por ejemplo, si se llega desde el dashboard, se mostrará un enlace para editar o eliminar el producto. Para ello podemos utilizar la url de la petición o pasar al controlador un parámetro extra que indique si se llega desde el dashboard o no.
-
-Para generar el html de forma más eficiente y sacarlo de la lógica, podemos crear funciones y variables auxiliares que generen el html de los productos y del formulario.
-Por ejemplo:
-- baseHtml: html común a todas las páginas. Puede contener elementos como la importación de estilos, etc.
-- getNavBar: Genera la barra de navegación con las categorías. En caso de estar en el dashboard, también generará un enlace para subir un nuevo producto.
-- getProductCards: Genera el html de los productos. Recibe un array de productos y devuelve el html de las tarjetas de los productos.
-- ...
+Además, también tenemos la función showDashboard, que devuelve la vista del panel de administración una vez que hemos iniciado sesión. 
 
 ## Despliegue
 
-He usado Render para el despliegue del proyecto desde Github. No olvides añadir las variables de entorno necesarias en la configuración de Render.
+He usado Render para el despliegue del proyecto desde Github. Como he mencionado anteriormente, es importante añadir las variables de entorno necesarias (Mongo URI y las relacionadas con Firebase) en la configuración de Render antes del despliegue.
 
 ## API y documentación con Postman
 
-El proyecto incluye una API que devuelve datos en formato JSON. La documentación de la API está disponible utilizando [Postman](https://documenter.getpostman.com/view/38534667/2sAXxS7WKm#intro), lo que facilita su comprensión y uso.
+El proyecto incluye una API que devuelve datos en formato JSON. La documentación de la API está disponible en [Postman](https://documenter.getpostman.com/view/38534667/2sAXxS7WKm#intro).
 
 ## Autenticación con Firebase
 
-Crearemos un usuario administrador para que pueda subir desde el dashboard más productos. Esas rutas deberán estar protegidas para que solo pueda entrar quien esté logado y pueda acceder a esos elementos para crearlos, verlos, actualizarlos y borrarlos. 
+Finalmente, la web cuenta con un sistema de creación de usuarios e inicio de sesión para lo que hemos usado Firebase. Una vez creado un usuario administrador desde /register, el usuario puede iniciar sesión desde /login para poder acceder al dashboard y gestionar los productos. Las rutas están protegidas con authMiddleware para que solo pueda entrar quien esté logado y pueda acceder a esos elementos para verlos, actualizarlos, borrarlos o crearlos. 
 
-Recordad que los datos del `serviceAccount`están protegidos y debes tenerlos en el archivo `.env` 
-También en este repo hay un ejemplo de `views`de como acceder a la carpeta `public` para hacer accesible esos archivos estáticos `express.static`. 
+Los datos del `serviceAccount`están protegidos en el archivo `.env` y toda la lógica del login está en utils/configLogin.js
 
 
 
