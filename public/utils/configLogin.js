@@ -4,34 +4,32 @@ import { getAuth, signInWithEmailAndPassword } from 'https://www.gstatic.com/fir
 
 // Función para obtener la configuración de Firebase desde el servidor
 const fetchFirebaseConfig = async () => {
-    const response = await fetch('/firebase-config'); // Llama a tu API para obtener la configuración
+    const response = await fetch('/firebase-config'); 
     if (!response.ok) {
         throw new Error('Failed to fetch Firebase config');
     }
     return await response.json(); // Devuelve la configuración como un objeto
 };
 
-let auth; // Declara auth aquí para que esté disponible en el ámbito global de este módulo
+let auth; 
 
 // Inicializa Firebase
 const initializeFirebase = async () => {
-        const firebaseConfig = await fetchFirebaseConfig(); // Espera a obtener la configuración
-        const app = initializeApp(firebaseConfig); // Inicializa Firebase
+        const firebaseConfig = await fetchFirebaseConfig(); 
+        const app = initializeApp(firebaseConfig);
         auth = getAuth(app); // Obtiene la autenticación de Firebase
     };
 
-// Define la función login como una arrow function
+
 const login = async () => {
     console.log('Login function called'); 
-    const mensajeDiv = document.getElementById('mensaje'); // Obtén el div para mostrar errores
-    mensajeDiv.textContent = ''; // Limpia mensajes anteriores
+    const mensajeDiv = document.getElementById('mensaje'); // div para mostrar errores
+    mensajeDiv.textContent = ''; 
   
     try {
-      // Obtén los valores de email y password
       const email = document.getElementById('email').value;
       const password = document.getElementById('password').value;
 
-      // Validación de entrada
       if (!email || !password) {
         mensajeDiv.textContent = 'Email and password are required';
         return;
@@ -41,7 +39,7 @@ const login = async () => {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       console.log('User Credential:', userCredential);
 
-      // Obtén el ID token del usuario autenticado
+      // ID token del usuario autenticado
       const idToken = await userCredential.user.getIdToken(); // usado por firebase. Esto es JWT 
       console.log('ID Token:', idToken);
 
@@ -72,9 +70,8 @@ const login = async () => {
   
 
 document.getElementById('loginForm').addEventListener('submit', (event) => {
-    event.preventDefault(); // Evita que el formulario se envíe de forma tradicional
+    event.preventDefault(); // el formulario se envía evitando que la pagina se recargue
     login(); 
 });
 
-// Inicializa Firebase al cargar el script
 initializeFirebase();

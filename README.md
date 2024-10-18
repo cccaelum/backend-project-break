@@ -16,7 +16,7 @@ Bienvenid@ a Resin Dreams, una tienda online dedicada a la venta de cositas hech
 
 ## Estructura de archivos
 
-La estructura principal del proyecto es la siguiente:
+La estructura del proyecto es la siguiente:
 ```
 .
 ├── config
@@ -45,7 +45,7 @@ La estructura principal del proyecto es la siguiente:
 ```        
 Antes de comenzar, asegúrate de tener Node.js instalado. 
 
-Una vez clonado el repositorio, abre la terminal para instalar las dependencias (npm install). Se instalará lo siguiente:
+Una vez clonado el repositorio, abre la terminal para instalar las dependencias (`npm install`). Se instalará lo siguiente:
 - Express
 - dotenv
 - method-override
@@ -55,7 +55,7 @@ Una vez clonado el repositorio, abre la terminal para instalar las dependencias 
 
 Además deberás configurar las variables de entorno para que el proyecto funcione: crea un archivo .env en la raíz del proyecto y asegúrate de cambiar la MONGO_URI por tu cadena de conexión a MongoDB. Para ello, antes tendrás que crear una nueva base de datos en MongoDB Atlas y asegurarte de que sea accesible. También deberás cambiar las variables de entorno relacionadas con Firebase.
 
-Una vez configuradas las variables de entorno, inicia el servidor utilizando el siguiente comando: npm start
+Una vez configuradas las variables de entorno, inicia el servidor utilizando el siguiente comando: `npm start`
 
 Para acceder a la aplicación desde tu PC, abre el navegador y visita http://localhost:3003
 
@@ -63,35 +63,37 @@ Para acceder a la aplicación desde tu PC, abre el navegador y visita http://loc
 
 El modelo de producto para la base de datos consta de los siguientes campos:
 
-Nombre: Nombre del producto.
-Descripción: Descripción detallada del producto.
-Imagen: URL o ruta de la imagen del producto.
-Categoría: Categoría a la que pertenece el producto.
-Precio: Precio del producto.
+- Nombre: Nombre del producto.
+- Descripción: Descripción detallada del producto.
+- Imagen: URL o ruta de la imagen del producto.
+- Categoría: Categoría a la que pertenece el producto.
+- Precio: Precio del producto.
 
 ## Servidor
 
-El archivo index.js es el punto de entrada de la aplicación, donde se configura el servidor y se registran las rutas. El servidor utiliza middleware como express.urlencoded para procesar los cuerpos de las solicitudes y express.static para servir archivos estáticos desde la carpeta public.
+El archivo `index.js` es el punto de entrada de la aplicación, donde se configura el servidor y se registran las rutas. El servidor utiliza middleware como `express.urlencoded` para procesar los cuerpos de las solicitudes y `express.static` para servir archivos estáticos desde la carpeta `public`.
+
+Para permitir el uso de métodos HTTP como PUT en formularios HTML, que por defecto solo soportan GET y POST, estamos utilizando el paquete `method-override`, el cual nos permite enviar un parámetro adicional en nuestras solicitudes POST para que el servidor las interprete como PUT.
 
 ## Rutas
 
-Las rutas están divididas en 3 archivos: apiRoutes, authRoutes y productRoutes.
+Las rutas están divididas en 3 archivos: `apiRoutes`, `authRoutes` y `productRoutes`.
 
-En apiRoutes encontramos las rutas de la API:
+En `apiRoutes` encontramos las rutas de la API:
 - GET /api/products: devuelve todos los productos.
 - GET /api/products/:id: devuelve el detalle de un producto.
 - POST /api/products/new: crea un nuevo producto.
 - PUT /api/products/:id: actualiza un producto por su ID.
 - DELETE /api/products/:id: borra un producto por su ID.
 
-En authRoutes tenemos las rutas que requieren autenticación con Firebase:
+En `authRoutes` tenemos las rutas que requieren autenticación con Firebase:
 - GET /register: devuelve el formulario de registro.
 - POST /register: crea un nuevo usuario con el email y contraseña recogidos en el formulario.
 - GET /login: devuelve el formulario para iniciar sesión en nuestra web.
 - POST /login: crea y verifica el token para iniciar sesión.
 - POST /logout: elimina el token de sesión y redirige al inicio.
 
-Por último, el archivo productRoutes.js incluye las rutas para la visualización y gestión de productos:
+Por último, el archivo `productRoutes.js` incluye las rutas para la visualización y gestión de productos:
 
 - GET /products: devuelve todos los productos. Cada producto tiene un enlace a su página de detalle.
 - GET /products/:_id: devuelve el detalle de un producto.
@@ -107,19 +109,19 @@ Por último, el archivo productRoutes.js incluye las rutas para la visualizació
 
 En la carpeta de controladores encontrados dos archivos, uno con los controladores de la API y otro con los controladores de nuestra web. 
 
-El ProductApiController maneja solicitudes CRUD y devuelve las respuestas en formato JSON. Por otro lado, el Productcontroller también maneja solicitudes CRUD, pero las respuestas son en formato HTML (vistas con SSR).
+El `ProductApiController` maneja solicitudes CRUD y devuelve las respuestas en formato JSON. Por otro lado, el `Productcontroller` también maneja solicitudes CRUD, pero las respuestas son en formato HTML (vistas con SSR).
 
 Las funciones principales del controlador son:
 
-- showProducts: Devuelve la vista con todos los productos.
-- showProductById: Devuelve la vista con el detalle de un producto.
-- showNewProduct: Devuelve la vista con el formulario para subir un artículo nuevo.
-- createProduct: Crea un nuevo producto. 
-- showEditProduct: Devuelve la vista con el formulario para editar un producto.
-- updateProduct: Actualiza un producto. 
-- deleteProduct: Elimina un producto. 
+- `showProducts`: Devuelve la vista con todos los productos.
+- `showProductById`: Devuelve la vista con el detalle de un producto.
+- `showNewProduct`: Devuelve la vista con el formulario para subir un artículo nuevo.
+- `createProduct`: Crea un nuevo producto. 
+- `showEditProduct`: Devuelve la vista con el formulario para editar un producto.
+- `updateProduct`: Actualiza un producto. 
+- `deleteProduct`: Elimina un producto. 
 
-Además, también tenemos la función showDashboard, que devuelve la vista del panel de administración una vez que hemos iniciado sesión. 
+Además, también tenemos la función `showDashboard`, que devuelve la vista del panel de administración una vez que hemos iniciado sesión. 
 
 ## Despliegue
 
@@ -131,9 +133,9 @@ El proyecto incluye una API que devuelve datos en formato JSON. La documentació
 
 ## Autenticación con Firebase
 
-Finalmente, la web cuenta con un sistema de creación de usuarios e inicio de sesión para lo que hemos usado Firebase. Una vez creado un usuario administrador desde /register, el usuario puede iniciar sesión desde /login para poder acceder al dashboard y gestionar los productos. Las rutas están protegidas con authMiddleware para que solo pueda entrar quien esté logado y pueda acceder a esos elementos para verlos, actualizarlos, borrarlos o crearlos. 
+Finalmente, la web cuenta con un sistema de creación de usuarios e inicio de sesión para lo que hemos usado Firebase. Una vez creado un usuario administrador desde /register, el usuario puede iniciar sesión desde /login para poder acceder al dashboard y gestionar los productos. Las rutas están protegidas con `authMiddleware` para que solo pueda entrar quien esté logado y pueda acceder a esos elementos para verlos, actualizarlos, borrarlos o crearlos. 
 
-Los datos del `serviceAccount`están protegidos en el archivo `.env` y toda la lógica del login está en utils/configLogin.js
+Los datos del `serviceAccount`están protegidos en el archivo `.env` y la lógica del login está en `configLogin.js`.
 
 
 

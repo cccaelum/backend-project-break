@@ -23,7 +23,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 const methodOverride = require('method-override');
-app.use(methodOverride('_method')); // https://alejandrojs.wordpress.com/2017/06/30/usando-method-override-para-hacer-requests-put-en-express/
+app.use(methodOverride('_method')); 
 
 app.use('/', router, apiRoutes, authRoutes)
 
